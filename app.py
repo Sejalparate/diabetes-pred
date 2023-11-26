@@ -1,61 +1,35 @@
 import streamlit as st
-import pandas as pd
-from PIL import Image
+import numpy as np
+import pickle 
 from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
 
-df = pd.read_csv(r'D:\VS CODE\PYTHON\diabetes.csv')
+st.title('Diabetes Prediction')
 
-st.title('Diabetes Checkup')
+loaded_model = pickle.load(open('Diabetesmodel.pkl', 'rb'))
 
-st.subheader('Training data')
-st.write(df.describe())
+def disease(input_data):
+    input_data_arr = np.asarray(input_data)
+    input_data_reshape = input_data_arr.reshape(1, -1)
 
-st.subheader('Visualization')
-st.bar_chart(df)
+    prediction = loaded_model.predict(input_data_reshape)
 
-x = df.drop(['Outcome'], axis=1)
-y = df.iloc[:, -1]
+    if (prediction[0] == 0):
+        return st.success('The person has diabetes')
+    else:
+        return st.error('The person has diabetes')
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+def main():
+    st.write('Prediction model')
 
-def user_report():
-    pregnancies = st.sidebar.slider('Pregnancies', 0, 17, 3)
-    glucose = st.sidebar.slider('Glucose', 0, 200, 120)
-    bp = st.sidebar.slider('BloodPressure', 0, 122, 70)
-    skinthickness = st.sidebar.slider('SkinThickness', 0, 100, 20)
-    insulin = st.sidebar.slider('Insulin', 0, 846, 79)
-    bmi = st.sidebar.slider('BMI', 0, 67, 20)
-    dpf = st.sidebar.slider('DiabetesPedigreeFunction', 0.0, 2.4, 0.47)
-    age = st.sidebar.slider('Age', 21, 88, 33)
+    BMI = st.number_input('Enter BMI (Body Mass Index)')
+    Insulin = st.number_input('Enter Insulin', step=2)
+    Glucose = st.number_input('Enter Glucose', step=2)
+    Age = st.number_input('Enter Age', step=2)
 
-    user_report = {
-        'Pregnancies': pregnancies,
-        'Glucose': glucose,
-        'BloodPressure': bp,
-        'SkinThickness': skinthickness,
-        'Insulin': insulin,
-        'BMI': bmi,
-        'DiabetesPedigreeFunction': dpf,
-        'Age': age
-    }
+    diagnosis = ''
 
-    report_data = pd.DataFrame(user_report, index=[0])
-    return report_data
+    if st.button('Predict'):
+        diagnosis = disease([Glucose, Insulin, BMI, Age])
 
-user_data = user_report()
-
-rf = RandomForestClassifier()
-rf.fit(x_train, y_train)
-
-st.subheader('Accuracy: ')
-st.write(str(accuracy_score(y_test, rf.predict(x_test))*100)+'%')
-
-user_result = rf.predict(user_data)
-st.subheader('Your Report: ')
-output = ''
-if user_result[0] == 0:
-    output = 'You do not have diabetes'
-else:
-    output = 'You have diabetes'
+if __name__ == '__main__':
+    main()
