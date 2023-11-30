@@ -14,16 +14,16 @@ def disease(input_data):
     prediction = loaded_model.predict(input_data_reshape)
 
     if (prediction[0] == 0):
-        return st.success('The person has diabetes')
+        return st.success('The person does not have diabetes')
     else:
         return st.error('The person has diabetes')
 
 def main():
     st.write('Prediction model')
 
-    BMI = st.number_input('Enter BMI (Body Mass Index)')
+    Glucose = st.number_input('Enter Glucose')
     Insulin = st.number_input('Enter Insulin', step=2)
-    Glucose = st.number_input('Enter Glucose', step=2)
+    BMI = st.number_input('Enter BMI (Body Mass Index)', step=2)   
     Age = st.number_input('Enter Age', step=2)
 
     diagnosis = ''
