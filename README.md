@@ -20,7 +20,13 @@ Clone the repository and navigate to the project directory
     
 ## Running the application
 
-Execute the following command to start the Streamlit application
+1. Install the dependencies by running the following command:
+```bash
+  pip install poetry
+  poetry install
+```
+
+3. Execute the following command to start the Streamlit application
 
 ```bash
   streamlit run app.py
