@@ -26,7 +26,7 @@ Clone the repository and navigate to the project directory
   poetry install
 ```
 
-3. Execute the following command to start the Streamlit application
+2. Execute the following command to start the Streamlit application
 
 ```bash
   streamlit run app.py
